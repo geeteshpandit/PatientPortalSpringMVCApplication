@@ -1,0 +1,268 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script language='javascript' >
+
+	var xmlHttp;
+    xmlHttp = GetXmlHttpObject();
+    
+          
+	function displayDoctors(key)
+		{
+			if (xmlHttp == null)
+            {
+                alert("Your browser does not support AJAX!");
+                return;
+            }
+            
+            var query = "key=" + key;
+             
+			xmlHttp.onreadystatechange = function stateChanged()
+			{
+				document.getElementById("results").innerHTML = "";
+				
+				
+				
+		        if (xmlHttp.readyState == 4)
+		        {
+		            var json = JSON.parse(xmlHttp.responseText);
+		            
+		            if (json.doctor.length > 0) 
+		            {
+			
+						var table = document.createElement('table');
+				        table.setAttribute('border','1');
+						table.setAttribute("id", "table");
+						document.getElementById("results").innerHTML = "Doctors in selected facility";
+				        document.getElementById("results").appendChild(table);
+				
+				        var y = document.createElement("TR");
+				        y.setAttribute("id", "tr");
+				        document.getElementById("table").appendChild(y);
+				
+				        var z = document.createElement("TH");
+				        var t = document.createTextNode("FirstName");
+				        z.appendChild(t);
+				        document.getElementById("tr").appendChild(z);
+				
+				        var z = document.createElement("TH");
+				        var t = document.createTextNode("LastName");
+				        z.appendChild(t);
+				        document.getElementById("tr").appendChild(z);
+				
+				        var z = document.createElement("TH");
+				        var t = document.createTextNode("Speciality");
+				        z.appendChild(t);
+				        document.getElementById("tr").appendChild(z);
+				
+				        var z = document.createElement("TH");
+				        var t = document.createTextNode("Qualification");
+				        z.appendChild(t);
+				        document.getElementById("tr").appendChild(z);
+				        
+				        for (var count = 0; count < json.doctor.length; count++) {
+				            var y = document.createElement("TR");
+				            y.setAttribute("id", "tr" + count);
+				            table.appendChild(y);
+				            
+				            var z = document.createElement("TD");
+				            var p = document.createTextNode(json.doctor[count].fn);
+				            z.appendChild(p);
+				            y.appendChild(z);
+				            
+				            var z = document.createElement("TD");
+				            var p = document.createTextNode(json.doctor[count].ln);
+				            z.appendChild(p);
+				            y.appendChild(z);
+				            
+				            var z = document.createElement("TD");
+				            var p = document.createTextNode(json.doctor[count].sp);
+				            z.appendChild(p);
+				            y.appendChild(z);
+				            
+				            var z = document.createElement("TD");
+				            var p = document.createTextNode(json.doctor[count].qa);
+				            z.appendChild(p);
+				            y.appendChild(z);
+				            
+				            var z = document.createElement("TD");
+				            var p = document.createElement("a");
+				            p.href = "javascript:displaySessions(" + json.doctor[count].id + ")";
+				            p.innerHTML = "View Sessions";
+				            z.appendChild(p);
+				            y.appendChild(z);
+				           
+						}
+					}
+				}
+		 	};
+			        
+	        xmlHttp.open("POST", "fetchDoctor.htm", true);
+	        xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	        xmlHttp.send(query);
+	        return false;
+		}
+        
+		function displaySessions(key)
+		{
+			
+			if (xmlHttp == null)
+            {
+                alert("Your browser does not support AJAX!");
+                return;
+            }
+            var query = "key=" + key;
+             
+			xmlHttp.onreadystatechange = function stateChanged()
+			{
+				document.getElementById("sessresults").innerHTML = "";
+				
+				document.getElementById("sessresults").innerHTML = "Sessions for selected doctor";
+				
+		        if (xmlHttp.readyState == 4)
+		        {
+		            var jsons = JSON.parse(xmlHttp.responseText);
+		            
+		            if (jsons.session.length > 0) 
+		            {
+						var sesstable = document.createElement('table');
+				        sesstable.setAttribute('border','1');
+						sesstable.setAttribute("id", "sesstable");
+						
+				        document.getElementById("sessresults").appendChild(sesstable);
+				
+				        var y = document.createElement("TR");
+				        y.setAttribute("id", "tre");
+				        document.getElementById("sesstable").appendChild(y);
+				
+				        var z = document.createElement("TH");
+				        var t = document.createTextNode("SessionDate");
+				        z.appendChild(t);
+				        y.appendChild(z);
+				
+				        var z = document.createElement("TH");
+				        var t = document.createTextNode("Slot");
+				        z.appendChild(t);
+				        y.appendChild(z);
+				
+				        var z = document.createElement("TH");
+				        var t = document.createTextNode("DayOfWeek");
+				        z.appendChild(t);
+				        y.appendChild(z);
+				
+				        var z = document.createElement("TH");
+				        var t = document.createTextNode("Doctor");
+				        z.appendChild(t);
+				        y.appendChild(z);
+				        
+				        for (var count = 0; count < jsons.session.length; count++) {
+				            var y = document.createElement("TR");
+				            y.setAttribute("id", "tre" + count);
+				            document.getElementById("sesstable").appendChild(y);
+				            
+				            var z = document.createElement("TD");
+				            var p = document.createTextNode(jsons.session[count].sd);
+				            z.appendChild(p);
+				            y.appendChild(z);
+				            
+				            var z = document.createElement("TD");
+				            var p = document.createTextNode(jsons.session[count].sl);
+				            z.appendChild(p);
+				            y.appendChild(z);
+				            
+				            var z = document.createElement("TD");
+				            var p = document.createTextNode(jsons.session[count].dw);
+				            z.appendChild(p);
+				            y.appendChild(z);
+				            
+				            var z = document.createElement("TD");
+				            var p = document.createTextNode(jsons.session[count].fn);
+				            z.appendChild(p);
+				            y.appendChild(z);
+				            
+				            var z = document.createElement("TD");
+				            var p = document.createElement("a");
+				            var id = jsons.session[count].id;
+				            p.href = "bookAppointment.htm?sessionID=" +  id ;
+				            p.innerHTML = "Book Appointment";
+				            z.appendChild(p);
+				            y.appendChild(z);
+				           
+						}
+					}
+				}
+		 	};
+			        
+	        xmlHttp.open("POST", "fetchSession.htm", true);
+	        xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	        xmlHttp.send(query);
+	        return false;
+		}
+	
+	function GetXmlHttpObject()
+        {
+            var xmlHttp = null;
+            try
+            {
+                // Firefox, Opera 8.0+, Safari
+                xmlHttp = new XMLHttpRequest();
+            } 
+            catch (e)
+            {
+                // Internet Explorer
+                try
+                {
+                    xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+                } 
+                catch (e)
+                {
+                    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+            }
+            return xmlHttp;
+        }
+        
+</script>
+<title>Patient Welcome Page</title>
+</head>
+<body id='b'>
+	
+	<form>
+		<h2>Welcome $patient.firstName</h2>
+		<a href="viewPatient.htm" >Update your details</a>
+		<div id="logout" align = "right"><a href="logout.htm" margin-left = "auto" margin-right = "0";>Logout</a></div>
+		<br/>
+		<br/>
+		<br/>
+		Please select a clinic to book appointment:
+		<br/>
+		<br/>
+		<table border='1'>
+			<th>FacilityName</th>
+			<th>FacilityZIP Code</th>
+			<th>PhoneNumber</th>
+			#foreach($clinic in $cliniclist)
+				<tr>
+				<td>$clinic.facilityName</td>
+				<td>$clinic.zip</td>
+				<td>$clinic.phoneNumber</td>
+				<td><a href="javascript:displayDoctors($clinic.facilityID)">View Doctors</a></td>
+				</tr>
+			#end
+		</table>
+		<br/>
+		<br/>
+		<br/>
+		<div id="results">
+		
+		</div>
+		
+		<br/>
+		<br/>
+		<br/>
+		<div id="sessresults">
+		
+		</div>
+	</form>
+</body>
+</html>

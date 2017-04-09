@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+
+	<diskStore path="java.io.tmpdir" />
+
+	<defaultCache  eternal="false"
+		timeToIdleSeconds="60" timeToLiveSeconds="120" diskSpoolBufferSizeMB="20"
+	    diskExpiryThreadIntervalSeconds="120"
+		memoryStoreEvictionPolicy="LRU" statistics="true">
+		
+	</defaultCache>
+
+	<cache name="facilityFindCache"  eternal="false"
+		timeToIdleSeconds="5" timeToLiveSeconds="10">
+		
+	</cache>
+
+	<cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
+		 eternal="true">
+		
+	</cache>
+</ehcache>

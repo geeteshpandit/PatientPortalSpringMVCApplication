@@ -1,0 +1,199 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+<title>Doctor Welcome Page</title>
+<script language='javascript' >
+
+	var xmlHttp;
+    xmlHttp = GetXmlHttpObject();
+    
+    
+	function displayPatient(key)
+	{
+		if (xmlHttp == null)
+        {
+            alert("Your browser does not support AJAX!");
+            return;
+        }
+        
+        var query = "key=" + key;
+         
+		xmlHttp.onreadystatechange = function stateChanged()
+		{
+		document.getElementById("showPatient").innerHTML = "Patient Details";
+		
+		if (xmlHttp.readyState == 4)
+		        {
+		            var json = JSON.parse(xmlHttp.responseText);
+
+					var patForm = document.createElement('form');
+					patForm.setAttribute("id", "form");
+					
+					var myTable = document.createElement('table');
+					myTable.setAttribute("id", "mytable");
+					patForm.appendChild(myTable);
+					
+					var y = document.createElement("TR");
+			        myTable.appendChild(y);
+			        
+			        var z = document.createElement("TD");
+			        var p = document.createTextNode("First Name");
+			        z.appendChild(p);
+			        y.appendChild(z);
+			        
+			        var z = document.createElement("TD");
+			        var txtFirst = document.createElement('input');
+			        txtFirst.setAttribute('name','txtFirst');
+			        txtFirst.setAttribute('disabled','true');
+			        txtFirst.setAttribute('value',json.fn);
+			        z.appendChild(txtFirst);
+			        y.appendChild(z);
+			        
+			        var y1 = document.createElement("TR");
+			        myTable.appendChild(y1);
+			        
+			        var z = document.createElement("TD");
+			        var p = document.createTextNode("Last Name");
+			        z.appendChild(p);
+			        y1.appendChild(z);
+			        
+			        var z = document.createElement("TD");
+			        var txtLast = document.createElement('input');
+			        txtLast.setAttribute('name','txtLast');
+			        txtLast.setAttribute('disabled','true');
+			        txtLast.setAttribute('value',json.ln);
+			        z.appendChild(txtLast);
+			        y1.appendChild(z);
+			        
+			        var y2 = document.createElement("TR");
+			        myTable.appendChild(y2);
+			        
+			        var z = document.createElement("TD");
+			        var p = document.createTextNode("Age");
+			        z.appendChild(p);
+			        y2.appendChild(z);
+			        
+			        var z = document.createElement("TD");
+			        var txtAge = document.createElement('input');
+			        txtAge.setAttribute('name','txtAge');
+			        txtAge.setAttribute('disabled','true');
+			        txtAge.setAttribute('value',json.ag);
+			        z.appendChild(txtAge);
+			        y2.appendChild(z);
+			        
+			        var y3 = document.createElement("TR");
+			        myTable.appendChild(y3);
+			        
+			        var z = document.createElement("TD");
+			        var p = document.createTextNode("Blood Group");
+			        z.appendChild(p);
+			        y3.appendChild(z);
+			        
+			        var z = document.createElement("TD");
+			        var txtBloodGroup = document.createElement('input');
+			        txtBloodGroup.setAttribute('name','txtBloodGroup');
+			        txtBloodGroup.setAttribute('disabled','true');
+			        txtBloodGroup.setAttribute('value',json.bg);
+			        z.appendChild(txtBloodGroup);
+			        y3.appendChild(z);
+			        
+			        var y4 = document.createElement("TR");
+			        myTable.appendChild(y4);
+			        
+			        var z = document.createElement("TD");
+			        var p = document.createTextNode("Known Allergies");
+			        z.appendChild(p);
+			        y4.appendChild(z);
+			        
+			        var z = document.createElement("TD");
+			        var txtKnownAllergies = document.createElement('input');
+			        txtKnownAllergies.setAttribute('name','txtKnownAllergies');
+			        txtKnownAllergies.setAttribute('disabled','true');
+			        txtKnownAllergies.setAttribute('value',json.ka);
+			        z.appendChild(txtKnownAllergies);
+			        y4.appendChild(z);
+			        
+			        var y5 = document.createElement("TR");
+			        myTable.appendChild(y5);
+			        
+			        var z = document.createElement("TD");
+			        var p = document.createTextNode("Email");
+			        z.appendChild(p);
+			        y5.appendChild(z);
+			        
+			        var z = document.createElement("TD");
+			        var txtEmail = document.createElement('input');
+			        txtEmail.setAttribute('name','txtEmail');
+			        txtEmail.setAttribute('disabled','true');
+			        txtEmail.setAttribute('value',json.em);
+			        z.appendChild(txtEmail);
+			        y5.appendChild(z);
+			        
+			        document.getElementById("showPatient").appendChild(patForm);			        
+		        }
+        };
+        xmlHttp.open("POST", "displayPatient.htm", true);
+        xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlHttp.send(query);
+        return false;
+	}
+	
+	function GetXmlHttpObject()
+        {
+            var xmlHttp = null;
+            try
+            {
+                // Firefox, Opera 8.0+, Safari
+                xmlHttp = new XMLHttpRequest();
+            } 
+            catch (e)
+            {
+                // Internet Explorer
+                try
+                {
+                    xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+                } 
+                catch (e)
+                {
+                    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+            }
+            return xmlHttp;
+        }
+</script>
+</head>
+<body id='b'>
+	
+	<form>
+		<h2>Welcome $doctor.firstName</h2>
+		<div id="logout" align = "right"><a href="logout.htm" margin-left = "auto" margin-right = "0";>Logout</a></div>
+		View Booked Appointments:
+		<br/>
+		<br/>
+		<table border='1'>
+			<th>Appointment Status</th>
+			<th>Appointment Date</th>
+			<th>Slot</th>
+			<th>Patient</th>
+			#foreach($appointment in $appointmentlist)
+				
+					<tr>
+						<td>$appointment.status</td>
+						<td>$appointment.session.sessionDate</td>
+						<td>$appointment.session.slot</td>
+						<td>$appointment.patient.firstName</td>
+						<td><a href="javascript:displayPatient('$appointment.patient.patientID')">View Patient Info</a></td>
+						<td><a href="updateAppointment.htm?apptID=$appointment.appointmentID">Set Status</a></td>
+					</tr>
+			#end
+		</table>
+		<br/>
+		<br/>
+		<br/>
+		<div id="showPatient">
+		
+		</div>
+	</form>
+</body>
+</html>
